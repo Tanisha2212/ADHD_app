@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Adaptive Study - 8th Grade Science</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        function startCamera() {
+            const videoFeed = document.getElementById('camFeed');
+            videoFeed.src = "/video_feed";
+        }
+
+        // Listen for popup trigger
+        async function monitorPopup() {
+            const videoFeed = document.getElementById('camFeed');
+            const response = await fetch('/video_feed');
+        }
+
+        function showPopup() {
+            const popup = document.getElementById("popup");
+            popup.style.display = "flex";
+            setTimeout(() => popup.style.display = "none", 4000);
+        }
+    </script>
+</head>
+<body onload="startCamera()">
+
+<div class="container">
+    <div class="left-panel">
+        <h2>{{ main_video.title }}</h2>
+        <iframe width="100%" height="400"
+                src="{{ main_video.url.replace('watch?v=', 'embed/') }}"
+                frameborder="0" allowfullscreen></iframe>
+
+        <div class="desc">
+            <h3>Description:</h3>
+            <p>{{ main_video.description }}</p>
+        </div>
+    </div>
+
+    <div class="right-panel">
+        <h2>8th Grade Lessons</h2>
+        <div class="lesson-list">
+            {% for lesson in lessons %}
+                <div class="lesson-card">
+                    <a href="{{ lesson.url }}" target="_blank">
+                        <b>{{ lesson.title }}</b>
+                    </a>
+                    <p>{{ lesson.description }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="camera-monitor">
+  <h3> Monitoring...</h3>
+  <video id="webcam" autoplay playsinline width="300" height="200" style="border-radius: 8px; border: 1px solid #ccc;"></video>
+</div>
+
+<script>
+  async function startCamera() {
+    const video = document.getElementById('webcam');
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      video.srcObject = stream;
+      console.log(" Camera started");
+    } catch (error) {
+      console.error(" Camera error:", error);
+      alert("Please allow camera access for monitoring to work.");
+    }
+  }
+
+  // Start webcam after DOM is loaded
+  document.addEventListener('DOMContentLoaded', startCamera);
+</script>
+
+</div>
+
+</body>
+</html>
